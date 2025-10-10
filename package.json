@@ -1,0 +1,35 @@
+{
+  "name": "xcode-buildcache-action",
+  "version": "1.0.0",
+  "description": "",
+  "private": false,
+  "keywords": [
+    "actions",
+    "node",
+    "build",
+    "compile",
+    "cache",
+    "buildcache",
+    "xcode",
+    "macOS"
+  ],
+  "main": "src/restore.js",
+  "scripts": {
+    "clean": "rimraf ./dist",
+    "package-file": "ncc build --target es2020 -o",
+    "package-restore": "npm run package-file dist/restore src/restore.js",
+    "package-save": "npm run package-file dist/save src/save.js",
+    "package": "npm run package-restore && npm run  package-save"
+  },
+  "author": "Leif Hwang",
+  "license": "MIT",
+  "dependencies": {
+    "@actions/cache": "^4.0.5",
+    "@actions/core": "^1.11.1",
+    "@actions/exec": "^1.1.1",
+    "@actions/io": "^1.1.3",
+    "@actions/tool-cache": "^2.0.2",
+    "@vercel/ncc": "^0.38.4",
+    "rimraf": "^6.0.1"
+  }
+}
