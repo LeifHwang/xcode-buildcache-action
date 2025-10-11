@@ -54,15 +54,15 @@ async function download() {
 }
 
 async function install(downloadPath) {
-  const installDir = utils.getEnvVar('GITHUB_WORKSPACE', '');
-  await io.mkdirP(installDir);
+  const { getInstallDir, zipInnerDir } = utils;
 
+  const installDir = await getInstallDir();
   const buildcacheFolder = await toolCache.extractZip(downloadPath, installDir);
   logger.info(`unpacked folder ${buildcacheFolder}`);
 
   // do symbolic links
-  const buildcacheBinFolder = path.resolve(buildcacheFolder, 'buildcache', 'bin');
-  const buildcacheBinPath = path.join(buildcacheBinFolder, 'buildcache');
+  const buildcacheBinFolder = path.resolve(buildcacheFolder, zipInnerDir, 'bin');
+  const buildcacheBinPath = path.join(buildcacheBinFolder, zipInnerDir);
 
   await exec.exec('ln', ['-s', buildcacheBinPath, path.join(buildcacheBinFolder, 'clang')]);
   await exec.exec('ln', ['-s', buildcacheBinPath, path.join(buildcacheBinFolder, 'clang++')]);
@@ -96,6 +96,7 @@ async function run() {
     await restore();
 
     await utils.printStats();
+    await utils.zeroStats();
   } catch (e) {
     logger.error(`failure during restore: ${e}`);
 

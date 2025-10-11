@@ -83245,6 +83245,7 @@ var execExports = requireExec();
 var ioExports = requireIo();
 
 const actionName = 'xcode-buildcache';
+const zipInnerDir = 'buildcache';
 
 //
 //
@@ -83280,7 +83281,7 @@ async function getInstallDir() {
 async function getCacheDir() {
   const installDir = await getInstallDir();
 
-  return path.resolve(installDir, getEnvVar('BUILDCACHE_DIR', '.buildcache'));
+  return path.resolve(installDir, getEnvVar('BUILDCACHE_DIR', zipInnerDir));
 }
 
 function getCacheKeys() {
@@ -83302,7 +83303,7 @@ async function printStats() {
   const env = { ...process.env };
   delete env?.BUILDCACHE_IMPERSONATE;
 
-  const { stdout } = await execExports.getExecOutput('buildcache', ['-s']);
+  const { stdout } = await execExports.getExecOutput(zipInnerDir, ['-s'], { env });
 
   const get = (name, def) => {
     return stdout.match(RegExp(`^  ${name}:\\s*(\\d+)$`, 'm'))?.[1] || def;
@@ -83313,6 +83314,12 @@ async function printStats() {
     misses: parseInt(get(`Misses`, '-1'))
   };
 }
+async function zeroStats() {
+  const env = { ...process.env };
+  delete env?.BUILDCACHE_IMPERSONATE;
+
+  await execExports.exec(zipInnerDir, ['-z'], { env });
+}
 
 var utils = /*#__PURE__*/Object.freeze({
 	__proto__: null,
@@ -83322,7 +83329,9 @@ var utils = /*#__PURE__*/Object.freeze({
 	getEnvVar: getEnvVar,
 	getInstallDir: getInstallDir,
 	logger: logger,
-	printStats: printStats
+	printStats: printStats,
+	zeroStats: zeroStats,
+	zipInnerDir: zipInnerDir
 });
 
-export { requireCore as a, requireIo as b, requireLib as c, requireExec as d, commonjsGlobal as e, coreExports as f, getEnvVar as g, execExports as h, ioExports as i, cacheExports as j, printStats as p, requireSemver as r, utils as u };
+export { requireCore as a, requireIo as b, requireLib as c, requireExec as d, commonjsGlobal as e, coreExports as f, execExports as g, cacheExports as h, printStats as p, requireSemver as r, utils as u, zeroStats as z };

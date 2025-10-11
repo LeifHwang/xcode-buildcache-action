@@ -4,6 +4,7 @@ import * as exec from '@actions/exec';
 import * as io from '@actions/io';
 
 export const actionName = 'xcode-buildcache';
+export const zipInnerDir = 'buildcache';
 
 //
 //
@@ -39,7 +40,7 @@ export async function getInstallDir() {
 export async function getCacheDir() {
   const installDir = await getInstallDir();
 
-  return path.resolve(installDir, getEnvVar('BUILDCACHE_DIR', '.buildcache'));
+  return path.resolve(installDir, getEnvVar('BUILDCACHE_DIR', zipInnerDir));
 }
 
 export function getCacheKeys() {
@@ -61,7 +62,7 @@ export async function printStats() {
   const env = { ...process.env };
   delete env?.BUILDCACHE_IMPERSONATE;
 
-  const { stdout } = await exec.getExecOutput('buildcache', ['-s']);
+  const { stdout } = await exec.getExecOutput(zipInnerDir, ['-s'], { env });
 
   const get = (name, def) => {
     return stdout.match(RegExp(`^  ${name}:\\s*(\\d+)$`, 'm'))?.[1] || def;
@@ -71,4 +72,10 @@ export async function printStats() {
     entries: parseInt(get(`Entries in cache`, '-1')),
     misses: parseInt(get(`Misses`, '-1'))
   };
+}
+export async function zeroStats() {
+  const env = { ...process.env };
+  delete env?.BUILDCACHE_IMPERSONATE;
+
+  await exec.exec(zipInnerDir, ['-z'], { env });
 }

@@ -1,6 +1,6 @@
 import * as path from 'path';
 import path__default from 'path';
-import { r as requireSemver, a as requireCore, b as requireIo, c as requireLib, d as requireExec, e as commonjsGlobal, p as printStats, u as utils, f as coreExports, g as getEnvVar, i as ioExports, h as execExports, j as cacheExports } from './utils-es.js';
+import { r as requireSemver, a as requireCore, b as requireIo, c as requireLib, d as requireExec, e as commonjsGlobal, p as printStats, z as zeroStats, u as utils, f as coreExports, g as execExports, h as cacheExports } from './utils-es.js';
 import require$$0$1 from 'crypto';
 import require$$1 from 'fs';
 import require$$0 from 'os';
@@ -1001,15 +1001,15 @@ async function download() {
 }
 
 async function install(downloadPath) {
-  const installDir = getEnvVar('GITHUB_WORKSPACE', '');
-  await ioExports.mkdirP(installDir);
+  const { getInstallDir, zipInnerDir } = utils;
 
+  const installDir = await getInstallDir();
   const buildcacheFolder = await toolCacheExports.extractZip(downloadPath, installDir);
   logger.info(`unpacked folder ${buildcacheFolder}`);
 
   // do symbolic links
-  const buildcacheBinFolder = path.resolve(buildcacheFolder, 'buildcache', 'bin');
-  const buildcacheBinPath = path.join(buildcacheBinFolder, 'buildcache');
+  const buildcacheBinFolder = path.resolve(buildcacheFolder, zipInnerDir, 'bin');
+  const buildcacheBinPath = path.join(buildcacheBinFolder, zipInnerDir);
 
   await execExports.exec('ln', ['-s', buildcacheBinPath, path.join(buildcacheBinFolder, 'clang')]);
   await execExports.exec('ln', ['-s', buildcacheBinPath, path.join(buildcacheBinFolder, 'clang++')]);
@@ -1043,6 +1043,7 @@ async function run() {
     await restore();
 
     await printStats();
+    await zeroStats();
   } catch (e) {
     logger.error(`failure during restore: ${e}`);
 
