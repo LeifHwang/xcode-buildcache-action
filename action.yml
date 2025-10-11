@@ -1,9 +1,11 @@
 name: "xcode-buildcache-action"
 description: "GitHub Action that installs and configures xcode build cache to accelerate compilation"
+author: "Leif Hwang"
+
 branding:
   icon: "archive"
   color: "gray-dark"
-author: "Leif Hwang"
+
 inputs:
   version:
     description: "Specify the release version to download"
@@ -16,8 +18,9 @@ inputs:
   cache_key:
     description: "An additional string to use in the cache key"
     required: false
+
 runs:
   using: "node20"
-  main: 'dist/restore/index.js'
-  post: 'dist/save/index.js'
+  main: 'dist/restore.js'
+  post: 'dist/save.js'
   post-if: "success()"

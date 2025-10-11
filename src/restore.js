@@ -1,11 +1,11 @@
-const path = require('path');
-const cache = require('@actions/cache');
-const core = require('@actions/core');
-const exec = require('@actions/exec');
-const io = require('@actions/io');
-const toolCache = require('@actions/tool-cache');
+import * as path from 'path';
+import * as cache from '@actions/cache';
+import * as core from '@actions/core';
+import * as exec from '@actions/exec';
+import * as io from '@actions/io';
+import * as toolCache from '@actions/tool-cache';
+import * as utils from './utils.js';
 
-const utils = require('./lib');
 const { logger } = utils;
 
 async function getLatestVersion() {
@@ -37,7 +37,7 @@ async function getLatestVersion() {
 
 async function download() {
   const filename = 'buildcache-macos.zip';
-  const version = core.getInput('version');
+  let version = core.getInput('version');
   if (!version) {
     version = await getLatestVersion();
   }

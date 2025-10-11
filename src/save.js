@@ -1,5 +1,5 @@
-const cache = require('@actions/cache');
-const utils = require('./lib');
+import * as cache from '@actions/cache';
+import * as utils from './utils.js';
 
 async function run() {
   const { printStats, logger } = utils;

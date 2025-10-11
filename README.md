@@ -13,7 +13,7 @@ jobs:
   ios:
   runs-on: macos-latest
   steps:
-    - uses: mikehardy/buildcache-action@v2
+    - uses: LeifHwang/xcode-buildcache-action@v1
 ```
 
 ## Build Integration
