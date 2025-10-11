@@ -1008,8 +1008,8 @@ async function install(downloadPath) {
   logger.info(`unpacked folder ${buildcacheFolder}`);
 
   // do symbolic links
+  const buildcacheBinFolder = path.resolve(buildcacheFolder, 'buildcache', 'bin');
   const buildcacheBinPath = path.join(buildcacheBinFolder, 'buildcache');
-  const buildcacheBinFolder = path.resolve(buildcacheBinPath, 'bin');
 
   await execExports.exec('ln', ['-s', buildcacheBinPath, path.join(buildcacheBinFolder, 'clang')]);
   await execExports.exec('ln', ['-s', buildcacheBinPath, path.join(buildcacheBinFolder, 'clang++')]);
