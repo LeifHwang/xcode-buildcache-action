@@ -64,7 +64,7 @@ async function run() {
       await downloadAndExtract(version);
     }
 
-    await install(downloadPath);
+    await install();
 
     await utils.printStats();
     await utils.zeroStats();
