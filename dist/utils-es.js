@@ -83244,6 +83244,8 @@ var execExports = requireExec();
 
 var ioExports = requireIo();
 
+//
+//
 const actionName = 'xcode-buildcache';
 const zipInnerDir = 'buildcache';
 
@@ -83281,18 +83283,18 @@ async function getInstallDir() {
 async function getCacheDir() {
   const installDir = await getInstallDir();
 
-  return path.resolve(installDir, getEnvVar('BUILDCACHE_DIR', zipInnerDir));
+  return path.resolve(installDir, zipInnerDir);
 }
 
-function getCacheKeys() {
-  const inputKey = coreExports.getInput('cache_key');
-
+function getCacheKeys(version) {
   let withInput = actionName;
+
+  const inputKey = coreExports.getInput('cache_key');
   if (inputKey) {
     withInput = `${actionName}-${inputKey}`;
   }
 
-  const unique = `${withInput}-${new Date().toISOString()}`;
+  const unique = `${withInput}-${version}`;
 
   return { withInput, unique };
 }
@@ -83334,4 +83336,47 @@ var utils = /*#__PURE__*/Object.freeze({
 	zipInnerDir: zipInnerDir
 });
 
-export { requireCore as a, requireIo as b, requireLib as c, requireExec as d, commonjsGlobal as e, coreExports as f, execExports as g, cacheExports as h, printStats as p, requireSemver as r, utils as u, zeroStats as z };
+const _gitlabUrl = 'https://gitlab.com/bits-n-bites/buildcache/-/releases';
+
+//
+//
+async function _fetchLatestVersion() {
+    const { logger } = utils;
+
+    try {
+        const resp = await fetch(`${_gitlabUrl}/permalink/latest`, { redirect: 'manual' });
+        const location = resp.headers.get('location');
+
+        logger.info(`got gitlab latest release url: ${location}`);
+
+        const version = location.split('/').pop();
+        logger.info(`got gitlab latest release version: ${version}`);
+
+        return version;
+    } catch (error) {
+        return undefined;
+    }
+}
+
+/**
+ * use input version or fetch the latest version from gitlab
+ * @description when input version is null or "latest", fetch the latest version from gitlab 
+ * @returns version string value
+ */
+async function resolveVersion() {
+    let version = coreExports.getInput('version');
+    if (!version || version === 'latest') {
+        version = await _fetchLatestVersion();
+        if (!version) throw Error('fetch latest release version error');
+    }
+
+    return version;
+}
+
+//
+//
+function getDownloadUrl(version, filename = 'buildcache-macos.zip') {
+    return `${_gitlabUrl}/${version}/downloads/${filename}`;
+}
+
+export { requireCore as a, requireIo as b, requireLib as c, requireExec as d, commonjsGlobal as e, resolveVersion as f, coreExports as g, cacheExports as h, getDownloadUrl as i, getInstallDir as j, execExports as k, printStats as p, requireSemver as r, utils as u, zeroStats as z };

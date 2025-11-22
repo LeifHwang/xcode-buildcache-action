@@ -1,5 +1,7 @@
 import * as cache from '@actions/cache';
+
 import * as utils from './utils.js';
+import { resolveVersion } from './gitlabUtils.js';
 
 async function run() {
   const { printStats, logger } = utils;
@@ -13,8 +15,10 @@ async function run() {
     const { getCacheDir, getCacheKeys } = utils;
 
     try {
+      const version = await resolveVersion();
+
       const cacheDir = await getCacheDir();
-      const { unique } = getCacheKeys();
+      const { unique } = getCacheKeys(version);
 
       logger.info(`saving cache with key "${unique}".`);
 

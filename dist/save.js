@@ -1,4 +1,4 @@
-import { u as utils, h as cacheExports } from './utils-es.js';
+import { u as utils, f as resolveVersion, h as cacheExports } from './utils-es.js';
 import 'path';
 import 'fs';
 import 'assert';
@@ -49,8 +49,10 @@ async function run() {
     const { getCacheDir, getCacheKeys } = utils;
 
     try {
+      const version = await resolveVersion();
+
       const cacheDir = await getCacheDir();
-      const { unique } = getCacheKeys();
+      const { unique } = getCacheKeys(version);
 
       logger.info(`saving cache with key "${unique}".`);
 

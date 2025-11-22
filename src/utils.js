@@ -1,8 +1,11 @@
 import * as path from 'path';
+
 import * as core from '@actions/core';
 import * as exec from '@actions/exec';
 import * as io from '@actions/io';
 
+//
+//
 export const actionName = 'xcode-buildcache';
 export const zipInnerDir = 'buildcache';
 
@@ -40,18 +43,18 @@ export async function getInstallDir() {
 export async function getCacheDir() {
   const installDir = await getInstallDir();
 
-  return path.resolve(installDir, getEnvVar('BUILDCACHE_DIR', zipInnerDir));
+  return path.resolve(installDir, zipInnerDir);
 }
 
-export function getCacheKeys() {
-  const inputKey = core.getInput('cache_key');
-
+export function getCacheKeys(version) {
   let withInput = actionName;
+
+  const inputKey = core.getInput('cache_key');
   if (inputKey) {
     withInput = `${actionName}-${inputKey}`;
   }
 
-  const unique = `${withInput}-${new Date().toISOString()}`;
+  const unique = `${withInput}-${version}`;
 
   return { withInput, unique };
 }
