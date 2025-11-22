@@ -1009,7 +1009,7 @@ async function run() {
       await downloadAndExtract(version);
     }
 
-    await install(downloadPath);
+    await install();
 
     await printStats();
     await zeroStats();
