@@ -20,7 +20,7 @@ inputs:
     required: false
 
 runs:
-  using: "node20"
+  using: "node24"
   main: 'dist/restore.js'
   post: 'dist/save.js'
   post-if: "success()"
