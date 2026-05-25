@@ -31,8 +31,8 @@ async function install() {
   const buildcacheBinFolder = path.resolve(cacheDir, 'bin');
   const buildcacheBinPath = path.join(buildcacheBinFolder, zipInnerDir);
 
-  await exec.exec('ln', ['-s', buildcacheBinPath, path.join(buildcacheBinFolder, 'clang')]);
-  await exec.exec('ln', ['-s', buildcacheBinPath, path.join(buildcacheBinFolder, 'clang++')]);
+  await exec.exec('ln', ['-sf', buildcacheBinPath, path.join(buildcacheBinFolder, 'clang')]);
+  await exec.exec('ln', ['-sf', buildcacheBinPath, path.join(buildcacheBinFolder, 'clang++')]);
 
   core.addPath(buildcacheBinFolder);
 }
